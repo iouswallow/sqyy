@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>需求详情 · 数智中台</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/css/standard.css" />
+  <link rel="stylesheet" href="../../assets/css/components.css" />
+  <link rel="stylesheet" href="../../assets/css/layout.css" />
+</head>
+<body>
+  <script src="../../assets/js/data.js"></script>
+  <script src="../../assets/js/app.js"></script>
+  <script src="../../assets/js/components.js"></script>
+
+  <script>
+    LGApp.mountShell({ active: "demand", topTitle: "需求详情", topSub: "我的发布 / 需求" });
+    LGComp.mountDetailPage({
+      id: LGApp.qs("id"),
+      type: "demand",
+      typeLabel: "数据需求",
+      titleKey: "title",
+      listLabel: "需求发布",
+      listHref: "pages/publish/demand-list.html",
+      fields: [
+        {
+          section: "需求信息",
+          items: [
+            { label: "需求标题", key: "title", required: true, placeholder: "请输入数据需求标题", full: true },
+            { label: "需求分类", key: "category", type: "select", required: true, options: ["金融需求", "应急需求", "文旅需求", "治理需求", "民生需求", "其他"] },
+            { label: "需求方", key: "source", required: true, placeholder: "请输入提出需求的单位" },
+            { label: "期望格式", key: "format", type: "select", options: ["API", "API/CSV", "API/瓦片", "CSV", "数据库", "不限"] },
+            { label: "紧急程度", key: "urgency", extra: true, type: "select", required: true, options: ["高", "中", "低"] },
+            { label: "期望截止", key: "deadline", extra: true, type: "date", placeholder: "YYYY-MM-DD" }
+          ]
+        },
+        {
+          section: "需求详情",
+          items: [
+            { label: "需求申请单位", key: "applicant", extra: true, placeholder: "实际使用方单位", full: true },
+            { label: "需求描述", key: "description", type: "textarea", required: true, placeholder: "请描述所需数据的范围、字段、用途、预期效果…", full: true, hint: "需求描述越清晰，越有利于快速对接与审批通过" }
+          ]
+        }
+      ]
+    });
+  </script>
+</body>
+</html>

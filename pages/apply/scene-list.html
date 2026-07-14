@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>场景申请 · 数智中台</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/css/standard.css" />
+  <link rel="stylesheet" href="../../assets/css/components.css" />
+  <link rel="stylesheet" href="../../assets/css/layout.css" />
+</head>
+<body>
+  <script src="../../assets/js/data.js"></script>
+  <script src="../../assets/js/app.js"></script>
+  <script src="../../assets/js/components.js"></script>
+
+  <script>
+    LGApp.mountShell({ active: "scene", topTitle: "场景申请", topSub: "我的申请 / 场景" });
+    LGComp.mountListPage({
+      type: "scene",
+      typeLabel: "场景申请",
+      crumb: [{ label: "我的申请" }, { label: "场景申请" }],
+      title: "场景申请",
+      subtitle: "管理已申请与待申请的数据应用场景工单",
+      listHref: "pages/apply/scene-list.html",
+      detailHref: "scene-detail.html",
+      allowNew: true,
+      columns: [
+        { key: "id", title: "工单编号", width: "150px", render: function (r) { return '<span class="cell-id">' + r.id + '</span>'; } },
+        { key: "title", title: "场景名称", render: function (r) { return '<div class="cell-title">' + LGComp.escapeHtml(r.title) + '</div><div class="text-3" style="font-size:12px;">' + LGComp.escapeHtml(r.category) + '</div>'; } },
+        { key: "source", title: "申请单位", render: function (r) { return LGComp.tag(r.source); } },
+        { key: "scenario", title: "应用领域", render: function (r) { return '<span class="text-2">' + LGComp.escapeHtml((r.extra && r.extra.scenario) || "—") + '</span>'; } },
+        { key: "status", title: "状态", render: function (r) { return LGComp.badge(r.status); } },
+        { key: "updatedAt", title: "更新时间", render: function (r) { return '<span class="text-3" style="font-size:13px;">' + r.updatedAt + '</span>'; } }
+      ]
+    });
+  </script>
+</body>
+</html>

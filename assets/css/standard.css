@@ -1,0 +1,259 @@
+/* ==========================================================================
+   standard.css — 液态玻璃后台管理系统 · 标准基础层
+   设计令牌 / 重置 / 排版 / 流动背景 / 滚动条
+   所有页面共用，禁止在本文件中写具体组件
+   ========================================================================== */
+
+/* ---------- 设计令牌 ---------- */
+:root {
+  /* 主色：深蓝 + 紫色 + 黑色 */
+  --c-bg-0: #05070f;          /* 最深黑底 */
+  --c-bg-1: #0a0f1f;          /* 深黑蓝 */
+  --c-bg-2: #0b1e3f;          /* 深蓝 主背景基底 */
+  --c-bg-3: #122a5a;          /* 深蓝亮 */
+  --c-purple: #7c3aed;        /* 紫主 */
+  --c-purple-2: #a855f7;      /* 紫亮 */
+  --c-purple-3: #c084fc;      /* 紫淡 */
+  --c-cyan: #22d3ee;          /* 青蓝高亮 */
+  --c-blue: #3b82f6;          /* 辅助蓝 */
+
+  /* 状态色 */
+  --c-draft: #94a3b8;         /* 暂存 灰蓝 */
+  --c-submitted: #a855f7;     /* 已提交 紫 */
+  --c-approving: #22d3ee;     /* 审批中 青 */
+  --c-approved: #34d399;      /* 已通过 绿 */
+  --c-rejected: #f43f5e;      /* 已驳回 红 */
+
+  /* 文字层级 */
+  --t-1: rgba(255, 255, 255, 0.95);
+  --t-2: rgba(255, 255, 255, 0.72);
+  --t-3: rgba(255, 255, 255, 0.5);
+  --t-4: rgba(255, 255, 255, 0.34);
+
+  /* 玻璃 */
+  --glass-bg: rgba(255, 255, 255, 0.055);
+  --glass-bg-strong: rgba(255, 255, 255, 0.09);
+  --glass-bg-soft: rgba(255, 255, 255, 0.035);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border-strong: rgba(255, 255, 255, 0.2);
+  --glass-blur: 20px;
+  --glass-saturate: 140%;
+
+  /* 阴影 */
+  --sh-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --sh-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --sh-lg: 0 20px 50px rgba(0, 0, 0, 0.45);
+  --sh-glow-purple: 0 8px 32px rgba(124, 58, 237, 0.35);
+  --sh-glow-cyan: 0 8px 32px rgba(34, 211, 238, 0.28);
+  --sh-inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+
+  /* 圆角 */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+
+  /* 间距 (4 的倍数) */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-10: 40px;
+  --s-12: 48px;
+
+  /* 字号 */
+  --fz-xs: 12px;
+  --fz-sm: 13px;
+  --fz-md: 14px;
+  --fz-lg: 16px;
+  --fz-xl: 18px;
+  --fz-2xl: 22px;
+  --fz-3xl: 28px;
+  --fz-4xl: 36px;
+  --fz-hero: clamp(32px, 5vw, 56px);
+
+  /* 字体 */
+  --ff-display: "Sora", "Noto Sans SC", system-ui, sans-serif;
+  --ff-body: "Noto Sans SC", "Sora", system-ui, sans-serif;
+  --fw-r: 400;
+  --fw-m: 500;
+  --fw-sb: 600;
+  --fw-b: 700;
+
+  /* 动效 */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-1: 0.18s;
+  --dur-2: 0.3s;
+  --dur-3: 0.5s;
+
+  /* 布局 */
+  --sidebar-w: 248px;
+  --sidebar-w-collapsed: 76px;
+  --topbar-h: 64px;
+  --content-max: 1440px;
+}
+
+/* ---------- 重置 ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--ff-body);
+  font-size: var(--fz-md);
+  font-weight: var(--fw-r);
+  line-height: 1.6;
+  color: var(--t-1);
+  background-color: var(--c-bg-0);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--ff-display);
+  font-weight: var(--fw-sb);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--t-1);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+a:hover { color: var(--c-purple-3); }
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+ul, ol { list-style: none; }
+
+img { max-width: 100%; display: block; }
+
+/* ---------- 流动渐变背景 ---------- */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -10%;
+  z-index: -2;
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 10%, rgba(124, 58, 237, 0.28), transparent 60%),
+    radial-gradient(ellipse 70% 55% at 85% 20%, rgba(34, 211, 238, 0.18), transparent 55%),
+    radial-gradient(ellipse 90% 70% at 75% 90%, rgba(59, 130, 246, 0.22), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 20% 85%, rgba(168, 85, 247, 0.16), transparent 55%),
+    linear-gradient(160deg, #05070f 0%, #0a0f1f 35%, #0b1e3f 70%, #05070f 100%);
+  background-size: 200% 200%, 200% 200%, 200% 200%, 200% 200%, 100% 100%;
+  animation: bgFlow 28s ease-in-out infinite;
+  filter: saturate(1.05);
+}
+
+body::after {
+  /* 细噪点叠加，增加玻璃质感 */
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@keyframes bgFlow {
+  0%, 100% { background-position: 0% 0%, 100% 0%, 100% 100%, 0% 100%, 0 0; }
+  50%      { background-position: 30% 40%, 70% 30%, 60% 70%, 40% 60%, 0 0; }
+}
+
+/* ---------- 滚动条 ---------- */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: var(--r-pill);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(168, 85, 247, 0.4); background-clip: padding-box; }
+
+* { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.15) transparent; }
+
+::selection { background: rgba(124, 58, 237, 0.45); color: #fff; }
+
+/* ---------- 通用工具类 ---------- */
+.container {
+  width: 100%;
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 0 var(--s-6);
+}
+
+.text-1 { color: var(--t-1); }
+.text-2 { color: var(--t-2); }
+.text-3 { color: var(--t-3); }
+.text-4 { color: var(--t-4); }
+.text-purple { color: var(--c-purple-3); }
+.text-cyan { color: var(--c-cyan); }
+.text-gradient {
+  background: linear-gradient(120deg, #fff 0%, var(--c-purple-3) 50%, var(--c-cyan) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mono { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+
+.hidden { display: none !important; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* 入场动画基类 */
+.reveal { opacity: 0; transform: translateY(16px); animation: revealUp var(--dur-3) var(--ease-out) forwards; }
+@keyframes revealUp { to { opacity: 1; transform: none; } }
+
+/* 焦点可见性 */
+:focus-visible {
+  outline: 2px solid var(--c-purple-3);
+  outline-offset: 2px;
+  border-radius: var(--r-xs);
+}
+
+/* 减少动效偏好 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>产品详情 · 数智中台</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/css/standard.css" />
+  <link rel="stylesheet" href="../../assets/css/components.css" />
+  <link rel="stylesheet" href="../../assets/css/layout.css" />
+</head>
+<body>
+  <script src="../../assets/js/data.js"></script>
+  <script src="../../assets/js/app.js"></script>
+  <script src="../../assets/js/components.js"></script>
+
+  <script>
+    LGApp.mountShell({ active: "product", topTitle: "产品详情", topSub: "我的发布 / 产品" });
+    LGComp.mountDetailPage({
+      id: LGApp.qs("id"),
+      type: "product",
+      typeLabel: "数据产品",
+      titleKey: "title",
+      listLabel: "产品发布",
+      listHref: "pages/publish/product-list.html",
+      fields: [
+        {
+          section: "基本信息",
+          items: [
+            { label: "产品名称", key: "title", required: true, placeholder: "请输入数据产品名称", full: true },
+            { label: "产品分类", key: "category", type: "select", required: true, options: ["信用产品", "交通产品", "民生产品", "金融产品", "治理产品", "其他"] },
+            { label: "产品归属", key: "source", required: true, placeholder: "请输入产品提供方" },
+            { label: "交付形式", key: "format", type: "select", options: ["API", "API/报表", "API/CSV", "报表", "数据集", "可视化"] },
+            { label: "计费方式", key: "price", extra: true, type: "select", options: ["按调用计费", "订阅制", "免费", "一次性"] },
+            { label: "服务等级", key: "sla", extra: true, placeholder: "如：99.9%" }
+          ]
+        },
+        {
+          section: "产品详情",
+          items: [
+            { label: "目标受众", key: "audience", extra: true, placeholder: "请输入目标使用方", full: true },
+            { label: "产品描述", key: "description", type: "textarea", required: true, placeholder: "请描述数据产品的功能、价值、应用场景…", full: true, hint: "建议说明产品输入输出、核心能力与典型应用场景" }
+          ]
+        }
+      ]
+    });
+  </script>
+</body>
+</html>

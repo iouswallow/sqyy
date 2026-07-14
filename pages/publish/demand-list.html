@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>需求发布 · 数智中台</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/css/standard.css" />
+  <link rel="stylesheet" href="../../assets/css/components.css" />
+  <link rel="stylesheet" href="../../assets/css/layout.css" />
+</head>
+<body>
+  <script src="../../assets/js/data.js"></script>
+  <script src="../../assets/js/app.js"></script>
+  <script src="../../assets/js/components.js"></script>
+
+  <script>
+    LGApp.mountShell({ active: "demand", topTitle: "需求发布", topSub: "我的发布 / 需求" });
+    LGComp.mountListPage({
+      type: "demand",
+      typeLabel: "数据需求",
+      crumb: [{ label: "我的发布" }, { label: "需求发布" }],
+      title: "需求发布",
+      subtitle: "管理已提出与待提出的数据需求工单",
+      listHref: "pages/publish/demand-list.html",
+      detailHref: "demand-detail.html",
+      allowNew: true,
+      columns: [
+        { key: "id", title: "工单编号", width: "150px", render: function (r) { return '<span class="cell-id">' + r.id + '</span>'; } },
+        { key: "title", title: "需求标题", render: function (r) { return '<div class="cell-title">' + LGComp.escapeHtml(r.title) + '</div><div class="text-3" style="font-size:12px;">' + LGComp.escapeHtml(r.category) + '</div>'; } },
+        { key: "source", title: "需求方", render: function (r) { return LGComp.tag(r.source); } },
+        { key: "urgency", title: "紧急度", render: function (r) { var u = (r.extra && r.extra.urgency) || "—"; var c = u === "高" ? "var(--c-rejected)" : (u === "中" ? "#fbbf24" : "var(--c-approved)"); return '<span class="badge" style="color:' + c + '">' + u + '</span>'; } },
+        { key: "status", title: "状态", render: function (r) { return LGComp.badge(r.status); } },
+        { key: "updatedAt", title: "更新时间", render: function (r) { return '<span class="text-3" style="font-size:13px;">' + r.updatedAt + '</span>'; } }
+      ]
+    });
+  </script>
+</body>
+</html>

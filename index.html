@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>工作台 · 数智中台</title>
+  <meta name="description" content="液态玻璃后台管理系统 - 工作台首页" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/css/standard.css" />
+  <link rel="stylesheet" href="./assets/css/components.css" />
+  <link rel="stylesheet" href="./assets/css/layout.css" />
+</head>
+<body>
+  <!-- 标准脚本 -->
+  <script src="./assets/js/data.js"></script>
+  <script src="./assets/js/app.js"></script>
+  <script src="./assets/js/components.js"></script>
+
+  <script>
+    LGApp.mountShell({ active: "dashboard", topTitle: "工作台", topSub: "数据运营管理中心" });
+    renderDashboard();
+
+    function renderDashboard() {
+      var root = LGApp.$("#page-root");
+      var D = LGData;
+      var stats = D.stats();
+      var recent = D.recent(6);
+
+      root.innerHTML = "";
+
+      // 欢迎区
+      var hero = document.createElement("div");
+      hero.className = "glass-card glass-border-gradient reveal";
+      hero.style.cssText = "padding:32px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;";
+      hero.innerHTML =
+        '<div style="display:flex;align-items:center;gap:20px;">' +
+          '<div style="width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,var(--c-purple),var(--c-cyan));box-shadow:var(--sh-glow-purple),var(--sh-inset-top);color:#fff;">' + LGApp.icon("layers") + '</div>' +
+          '<div><div style="font-family:var(--ff-display);font-size:24px;font-weight:700;">你好，张明远</div>' +
+          '<div style="color:var(--t-3);font-size:14px;margin-top:4px;">欢迎回到数智中台，今日有 <strong style="color:var(--c-cyan);">' + stats.pending + '</strong> 个工单待处理。</div></div>' +
+        '</div>' +
+        '<div style="display:flex;gap:12px;flex-wrap:wrap;">' +
+          '<a class="btn btn-ghost" href="./pages/publish/catalog-list.html">' + LGApp.icon("catalog") + '<span>数据目录</span></a>' +
+          '<a class="btn btn-primary" href="./pages/publish/product-list.html">' + LGApp.icon("plus") + '<span>新建发布</span></a>' +
+        '</div>';
+      root.appendChild(hero);
+
+      // 统计卡片
+      var grid = document.createElement("div");
+      grid.className = "stat-grid";
+      var cards = [
+        { label: "我的发布", value: stats.publish, icon: "publish", color: "var(--c-purple-3)", glow: "rgba(124,58,237,0.25)", trend: "+12%", trendUp: true, bar: 78, hint: "目录/产品/需求合计" },
+        { label: "我的申请", value: stats.apply, icon: "apply", color: "var(--c-cyan)", glow: "rgba(34,211,238,0.22)", trend: "+3", trendUp: true, bar: 45, hint: "场景申请工单" },
+        { label: "待处理", value: stats.pending, icon: "clock", color: "#fbbf24", glow: "rgba(251,191,36,0.2)", trend: "需关注", trendUp: false, bar: 60, hint: "已提交/审批中" },
+        { label: "已通过", value: stats.approved, icon: "check", color: "var(--c-approved)", glow: "rgba(52,211,153,0.2)", trend: "+8", trendUp: true, bar: 88, hint: "全部已通过工单" }
+      ];
+      cards.forEach(function (c, i) {
+        var card = document.createElement("div");
+        card.className = "stat-card reveal";
+        card.style.setProperty("--stat-color", c.color);
+        card.style.setProperty("--stat-glow", c.glow);
+        card.style.animationDelay = (i * 80) + "ms";
+        card.innerHTML =
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
+            '<div class="stat-card__icon">' + LGApp.icon(c.icon) + '</div>' +
+            '<span class="stat-card__trend ' + (c.trendUp ? "up" : "down") + '">' + (c.trendUp ? LGApp.icon("trendUp") : "") + c.trend + '</span>' +
+          '</div>' +
+          '<div><div class="stat-card__label">' + c.label + '</div>' +
+          '<div class="stat-card__value mono">' + c.value + '</div></div>' +
+          '<div class="stat-card__bar"><i style="width:' + c.bar + '%"></i></div>' +
+          '<div style="font-size:12px;color:var(--t-4);">' + c.hint + '</div>';
+        grid.appendChild(card);
+      });
+      root.appendChild(grid);
+
+      // 主体两栏：最近工单 + 快捷入口
+      var cols = document.createElement("div");
+      cols.className = "dash-grid";
+
+      // 最近工单
+      var listPanel = document.createElement("div");
+      listPanel.className = "panel reveal";
+      listPanel.style.animationDelay = "120ms";
+      listPanel.innerHTML =
+        '<div class="panel-header"><div class="panel-title"><span class="dot"></span>最近工单</div>' +
+        '<a class="btn-link" href="./pages/publish/catalog-list.html">查看全部 ' + LGApp.icon("chevron") + '</a></div>';
+      var listBox = document.createElement("div");
+      listPanel.appendChild(listBox);
+
+      var table = document.createElement("table");
+      table.className = "table";
+      table.style.minWidth = "0";
+      table.innerHTML = "<thead><tr><th>工单</th><th>类型</th><th>状态</th><th>更新时间</th></tr></thead>";
+      var tbody = document.createElement("tbody");
+      recent.forEach(function (r) {
+        var tr = document.createElement("tr");
+        tr.style.cursor = "pointer";
+        var href = typeHref(r.type) + "?id=" + r.id;
+        tr.addEventListener("click", function () { location.href = href; });
+        tr.innerHTML =
+          '<td><div class="cell-title">' + LGComp.escapeHtml(r.title) + '</div><div class="cell-id">' + r.id + '</div></td>' +
+          '<td>' + LGComp.tag(D.TYPE_LABEL[r.type]) + '</td>' +
+          '<td>' + LGComp.badge(r.status) + '</td>' +
+          '<td style="color:var(--t-3);font-size:13px;">' + r.updatedAt + '</td>';
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      var scroll = document.createElement("div");
+      scroll.className = "table-scroll";
+      scroll.appendChild(table);
+      listBox.appendChild(scroll);
+      cols.appendChild(listPanel);
+
+      // 快捷入口
+      var quick = document.createElement("div");
+      quick.className = "panel reveal";
+      quick.style.animationDelay = "180ms";
+      quick.innerHTML = '<div class="panel-header"><div class="panel-title"><span class="dot"></span>快捷入口</div></div>';
+      var qg = document.createElement("div");
+      qg.style.cssText = "display:grid;grid-template-columns:1fr 1fr;gap:12px;";
+      var entries = [
+        { label: "数据目录", desc: "发布数据目录", icon: "catalog", href: "./pages/publish/catalog-list.html", color: "var(--c-purple-3)" },
+        { label: "产品发布", desc: "上架数据产品", icon: "product", href: "./pages/publish/product-list.html", color: "var(--c-cyan)" },
+        { label: "需求发布", desc: "提出数据需求", icon: "demand", href: "./pages/publish/demand-list.html", color: "#fbbf24" },
+        { label: "场景申请", desc: "申请应用场景", icon: "scene", href: "./pages/apply/scene-list.html", color: "var(--c-approved)" }
+      ];
+      entries.forEach(function (e) {
+        var a = document.createElement("a");
+        a.href = e.href;
+        a.className = "glass-card glass-card--hover";
+        a.style.cssText = "padding:16px;display:flex;flex-direction:column;gap:10px;border-radius:14px;";
+        a.innerHTML =
+          '<div style="width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--glass-bg-strong);border:1px solid var(--glass-border);color:' + e.color + ';">' + LGApp.icon(e.icon) + '</div>' +
+          '<div><div style="font-weight:600;">' + e.label + '</div><div style="font-size:12px;color:var(--t-3);">' + e.desc + '</div></div>';
+        qg.appendChild(a);
+      });
+      quick.appendChild(qg);
+
+      // 状态分布
+      var dist = document.createElement("div");
+      dist.className = "panel";
+      dist.style.marginTop = "16px";
+      dist.innerHTML = '<div class="panel-header"><div class="panel-title"><span class="dot"></span>状态分布</div></div>';
+      var distBox = document.createElement("div");
+      distBox.style.cssText = "display:flex;flex-direction:column;gap:12px;";
+      var distData = [
+        { label: "暂存", val: stats.draft, color: "var(--c-draft)" },
+        { label: "审批中/已提交", val: stats.pending, color: "var(--c-approving)" },
+        { label: "已通过", val: stats.approved, color: "var(--c-approved)" },
+        { label: "已驳回", val: stats.rejected, color: "var(--c-rejected)" }
+      ];
+      var total = stats.total || 1;
+      distData.forEach(function (d) {
+        var pct = Math.round(d.val / total * 100);
+        var row = document.createElement("div");
+        row.innerHTML =
+          '<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;"><span style="color:var(--t-2);">' + d.label + '</span><span class="mono">' + d.val + ' · ' + pct + '%</span></div>' +
+          '<div class="stat-card__bar"><i style="width:' + pct + '%;background:linear-gradient(90deg,' + d.color + ',' + d.color + ');"></i></div>';
+        distBox.appendChild(row);
+      });
+      dist.appendChild(distBox);
+      quick.appendChild(dist);
+      cols.appendChild(quick);
+
+      root.appendChild(cols);
+    }
+
+    function typeHref(type) {
+      var m = { catalog: "./pages/publish/catalog-detail.html", product: "./pages/publish/product-detail.html", demand: "./pages/publish/demand-detail.html", scene: "./pages/apply/scene-detail.html" };
+      return m[type] || "./pages/publish/catalog-detail.html";
+    }
+  </script>
+</body>
+</html>

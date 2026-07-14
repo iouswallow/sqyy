@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>场景申请详情 · 数智中台</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/css/standard.css" />
+  <link rel="stylesheet" href="../../assets/css/components.css" />
+  <link rel="stylesheet" href="../../assets/css/layout.css" />
+</head>
+<body>
+  <script src="../../assets/js/data.js"></script>
+  <script src="../../assets/js/app.js"></script>
+  <script src="../../assets/js/components.js"></script>
+
+  <script>
+    LGApp.mountShell({ active: "scene", topTitle: "场景申请详情", topSub: "我的申请 / 场景" });
+    LGComp.mountDetailPage({
+      id: LGApp.qs("id"),
+      type: "scene",
+      typeLabel: "场景申请",
+      titleKey: "title",
+      listLabel: "场景申请",
+      listHref: "pages/apply/scene-list.html",
+      fields: [
+        {
+          section: "场景信息",
+          items: [
+            { label: "场景名称", key: "title", required: true, placeholder: "请输入应用场景名称", full: true },
+            { label: "场景分类", key: "category", type: "select", required: true, options: ["金融场景", "治理场景", "民生场景", "应急场景", "经济场景", "其他"] },
+            { label: "申请单位", key: "source", required: true, placeholder: "请输入场景申请单位" },
+            { label: "应用领域", key: "scenario", extra: true, type: "select", required: true, options: ["普惠金融", "城市治理", "基层治理", "应急管理", "智慧文旅", "政务服务", "其他"] }
+          ]
+        },
+        {
+          section: "场景详情",
+          items: [
+            { label: "数据使用范围", key: "dataScope", extra: true, placeholder: "请说明涉及的数据范围与来源", full: true },
+            { label: "参与单位", key: "participants", extra: true, placeholder: "请说明参与协同的单位", full: true },
+            { label: "场景描述", key: "description", type: "textarea", required: true, placeholder: "请描述场景的建设目标、业务流程、预期成效…", full: true, hint: "场景描述应说明业务痛点、数据应用方式与预期社会/经济效益" }
+          ]
+        }
+      ]
+    });
+  </script>
+</body>
+</html>
