@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>场景审批 · 数智中台</title>
+  <link rel="stylesheet" href="../../assets/css/standard.css" />
+  <link rel="stylesheet" href="../../assets/css/components.css" />
+  <link rel="stylesheet" href="../../assets/css/layout.css" />
+  <style>
+    .audit-wrap { margin-top: var(--s-5); }
+    .audit-search-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--s-4);
+      padding: var(--s-5) var(--s-6);
+      border-radius: var(--r-lg);
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--sh-md), var(--sh-inset-top);
+      margin-bottom: var(--s-5);
+      flex-wrap: wrap;
+    }
+    .audit-search-bar .search-box { flex: 1 1 240px; min-width: 200px; }
+    .audit-search-bar .search-box input { background: #fff; border: 1px solid var(--c-bg-3); }
+    .audit-search-bar .search-box input:focus { background: #fff; border-color: var(--c-purple-2); box-shadow: 0 0 0 3px rgba(124,58,237,0.12); }
+    .audit-search-bar .search-box input::placeholder { color: var(--t-4); }
+    .audit-search-bar .btn + .btn { margin-left: 0; }
+
+    .data-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: var(--fz-xs);
+      color: var(--c-blue);
+      background: rgba(59,130,246,0.08);
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: var(--r-xs);
+      margin: 2px 4px 2px 0;
+      text-decoration: underline;
+      text-decoration-color: rgba(59,130,246,0.4);
+      cursor: pointer;
+    }
+    .data-tag:hover { background: rgba(59,130,246,0.14); }
+
+    .status-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 24px;
+      padding: 0 10px;
+      font-size: var(--fz-xs);
+      font-weight: var(--fw-m);
+      border-radius: var(--r-pill);
+      white-space: nowrap;
+    }
+    .status-tag::before {
+      content: "";
+      width: 6px; height: 6px;
+      border-radius: var(--r-pill);
+      background: currentColor;
+    }
+    .status-tag--approved {
+      color: var(--c-approved);
+      background: rgba(5,150,105,0.08);
+      border: 1px solid rgba(5,150,105,0.2);
+    }
+    .status-tag--pending {
+      color: #d97706;
+      background: rgba(245,158,11,0.08);
+      border: 1px solid rgba(245,158,11,0.2);
+    }
+
+    .act-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 28px;
+      padding: 0 12px;
+      font-size: var(--fz-xs);
+      font-weight: var(--fw-m);
+      border-radius: var(--r-xs);
+      border: none;
+      cursor: pointer;
+      transition: all var(--dur-1) var(--ease-out);
+    }
+    .act-btn--view {
+      color: #fff;
+      background: linear-gradient(135deg, var(--c-blue), #60a5fa);
+    }
+    .act-btn--view:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    .act-btn--audit {
+      color: #fff;
+      background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    }
+    .act-btn--audit:hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+    .audit-table { min-width: 900px; }
+    .audit-table thead th {
+      background: rgba(255,255,255,0.85);
+      color: var(--t-3);
+      font-weight: var(--fw-sb);
+      font-size: var(--fz-xs);
+      letter-spacing: 0.04em;
+      text-transform: none;
+      padding: var(--s-3) var(--s-4);
+      border-bottom: 1px solid var(--glass-border);
+      white-space: nowrap;
+    }
+    .audit-table tbody td {
+      padding: var(--s-4);
+      font-size: var(--fz-sm);
+      color: var(--t-2);
+      border-bottom: 1px solid rgba(15,23,42,0.06);
+      vertical-align: middle;
+    }
+    .audit-table tbody tr { transition: background var(--dur-1) var(--ease-out); }
+    .audit-table tbody tr:hover { background: rgba(124,58,237,0.04); }
+    .audit-table tbody tr:last-child td { border-bottom: none; }
+    .audit-table .cell-num { color: var(--t-3); font-size: var(--fz-sm); text-align: center; }
+    .audit-table .cell-id { font-family: var(--ff-display); font-size: var(--fz-xs); color: var(--t-3); }
+    .audit-table .cell-title { font-weight: var(--fw-m); color: var(--t-1); }
+    .audit-table .cell-time { color: var(--t-3); font-size: var(--fz-xs); white-space: nowrap; }
+    .audit-table .cell-actions { text-align: right; white-space: nowrap; }
+
+    .pager-custom {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: var(--s-4);
+      padding: var(--s-4) var(--s-5);
+      flex-wrap: wrap;
+      font-size: var(--fz-sm);
+      color: var(--t-3);
+    }
+    .pager-custom__nav { display: flex; align-items: center; gap: var(--s-1); }
+    .pager-custom__btn {
+      min-width: 30px; height: 30px;
+      padding: 0 var(--s-2);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: var(--fz-sm);
+      border-radius: var(--r-xs);
+      background: #fff;
+      border: 1px solid var(--c-bg-3);
+      color: var(--t-2);
+      transition: all var(--dur-1) var(--ease-out);
+      cursor: pointer;
+    }
+    .pager-custom__btn:hover:not(:disabled) { border-color: var(--c-purple-2); color: var(--c-purple); }
+    .pager-custom__btn.active {
+      background: linear-gradient(135deg, var(--c-purple), var(--c-blue));
+      color: #fff;
+      border-color: transparent;
+      box-shadow: var(--sh-glow-purple);
+    }
+    .pager-custom__btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .pager-custom__goto { display: inline-flex; align-items: center; gap: 6px; }
+    .pager-custom__goto input {
+      width: 40px; height: 28px;
+      text-align: center;
+      font-size: var(--fz-sm);
+      border: 1px solid var(--c-bg-3);
+      border-radius: var(--r-xs);
+      background: #fff;
+      color: var(--t-1);
+    }
+    .pager-custom__size {
+      height: 28px;
+      padding: 0 8px;
+      font-size: var(--fz-sm);
+      border: 1px solid var(--c-bg-3);
+      border-radius: var(--r-xs);
+      background: #fff;
+      color: var(--t-1);
+    }
+
+    /* 移动端卡片 */
+    .audit-card-list { display: none; flex-direction: column; gap: var(--s-4); }
+    .audit-card {
+      padding: var(--s-4);
+      border-radius: var(--r-md);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-2);
+    }
+    .audit-card__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--s-3);
+    }
+    .audit-card__title { font-weight: var(--fw-sb); color: var(--t-1); }
+    .audit-card__meta { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-3); font-size: var(--fz-xs); color: var(--t-3); }
+    .audit-card__meta span { display: inline-flex; align-items: center; gap: 4px; }
+    .audit-card__datasets { display: flex; flex-wrap: wrap; gap: 4px; }
+    .audit-card__actions { display: flex; gap: var(--s-2); padding-top: var(--s-2); border-top: 1px solid var(--glass-border); justify-content: flex-end; }
+
+    @media (max-width: 767px) {
+      .audit-table-scroll { display: none; }
+      .audit-card-list { display: flex; }
+      .audit-search-bar { padding: var(--s-4); }
+      .pager-custom { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <script src="../../assets/js/data.js"></script>
+  <script src="../../assets/js/app.js"></script>
+  <script src="../../assets/js/components.js"></script>
+
+  <script>
+    (function () {
+      function start() {
+        if (!window.LGApp || !window.LGData || !window.LGComp) {
+          setTimeout(start, 50);
+          return;
+        }
+        try {
+          LGApp.mountShell({ active: "sceneAudit", topTitle: "场景审批", topSub: "审核管理 / 场景审批" });
+          renderPage();
+        } catch (e) {
+          document.body.innerHTML = '<div style="padding:40px;font-family:system-ui,sans-serif;"><h2>页面加载异常</h2><p>' + (e.message || e) + '</p></div>';
+        }
+      }
+      start();
+
+      var AUDIT_DATA = [
+        {
+          id: "YSSZ_20260713_00001", title: "测试0001", applicant: "汪景", org: "南洋万邦测试公司",
+          datasets: ["上海市_企业分支机构登记状态_核检...", "非遗数据API接口服务目录1"],
+          submitTime: "2026-07-13 16:32:12", status: "approved"
+        },
+        {
+          id: "YSSZ_20260710_00001", title: "11111", applicant: "匡媛", org: "深圳投资控股有限公司",
+          datasets: ["非遗数据API接口服务目录1", "测试-公司自由产品-信用背书-202...", "上海市_企业分支机构登记状态_核检..."],
+          submitTime: "2026-07-10 18:23:17", status: "approved"
+        },
+        {
+          id: "YSSZ_20260701_00001", title: "数商场景申请测试20260701", applicant: "—", org: "—",
+          datasets: ["企业AI-文档智能体平台"],
+          submitTime: "2026-07-01 10:26:17", status: "pending"
+        },
+        {
+          id: "YSSZ_20260630_00003", title: "测试1111", applicant: "—", org: "上海云赛数智科技有限公司",
+          datasets: ["企业AI-文档智能体平台"],
+          submitTime: "2026-06-30 18:09:22", status: "pending"
+        },
+        {
+          id: "YSSZ_20260630_00002", title: "123", applicant: "sqyy", org: "上海云赛数智科技有限公司",
+          datasets: ["手机在网时长查询（支持MD5）"],
+          submitTime: "2026-06-30 17:58:55", status: "pending"
+        },
+        {
+          id: "YSSZ_20260630_00001", title: "场景测试", applicant: "—", org: "上海云赛数智科技有限公司",
+          datasets: ["企见-企业财产AI尽调平台"],
+          submitTime: "2026-06-30 16:23:59", status: "pending"
+        }
+      ];
+
+      var state = { keyword: "", page: 1, pageSize: 10 };
+
+      function renderPage() {
+        var root = LGApp.$("#page-root");
+        if (!root) return;
+        root.innerHTML = "";
+
+        // 面包屑 + 页头
+        root.appendChild(crumb());
+
+        // 搜索栏
+        root.appendChild(buildSearchBar());
+
+        // 表格区
+        var tableBox = LGApp.el("div", { class: "audit-wrap" });
+        root.appendChild(tableBox);
+
+        var list = filtered();
+        var total = list.length;
+        var start = (state.page - 1) * state.pageSize;
+        var pageRows = list.slice(start, start + state.pageSize);
+
+        renderTable(tableBox, pageRows, start);
+        renderPager(tableBox, total);
+
+        // 入场动画
+        LGApp.$all(".audit-search-bar, .table-wrap, .audit-card", root).forEach(function (n, i) {
+          n.classList.add("reveal");
+          n.style.animationDelay = (i * 60) + "ms";
+        });
+      }
+
+      function crumb() {
+        var wrap = LGApp.el("div");
+        var bc = LGApp.el("div", { class: "breadcrumb" });
+        bc.appendChild(LGApp.el("a", { href: "../../index.html", text: "首页" }));
+        bc.appendChild(LGApp.el("span", { html: LGApp.icon("chevron"), style: "opacity:.4" }));
+        bc.appendChild(LGApp.el("span", { text: "场景审批" }));
+        wrap.appendChild(bc);
+        var head = LGApp.el("div", { class: "page-head" });
+        var ht = LGApp.el("div");
+        ht.appendChild(LGApp.el("h2", { class: "page-head__title", text: "场景审批" }));
+        head.appendChild(ht);
+        wrap.appendChild(head);
+        return wrap;
+      }
+
+      function buildSearchBar() {
+        var bar = LGApp.el("div", { class: "audit-search-bar" });
+        var search = LGApp.el("div", { class: "search-box" });
+        search.innerHTML = LGApp.icon("search");
+        var input = LGApp.el("input", { class: "input", type: "text", placeholder: "请输入关键词", value: state.keyword });
+        input.addEventListener("input", LGApp.debounce(function () {
+          state.keyword = input.value.trim();
+          state.page = 1;
+          renderPage();
+        }, 200));
+        search.appendChild(input);
+        bar.appendChild(search);
+
+        var spacer = LGApp.el("div", { class: "spacer" });
+        bar.appendChild(spacer);
+
+        var searchBtn = LGApp.el("button", { class: "btn btn-primary", html: "搜索" });
+        searchBtn.addEventListener("click", function () {
+          state.keyword = input.value.trim();
+          state.page = 1;
+          renderPage();
+        });
+        bar.appendChild(searchBtn);
+
+        var resetBtn = LGApp.el("button", { class: "btn btn-ghost", html: "重置", style: "margin-left:8px" });
+        resetBtn.addEventListener("click", function () {
+          state.keyword = "";
+          state.page = 1;
+          renderPage();
+        });
+        bar.appendChild(resetBtn);
+
+        return bar;
+      }
+
+      function filtered() {
+        return AUDIT_DATA.filter(function (r) {
+          if (!state.keyword) return true;
+          var kw = state.keyword.toLowerCase();
+          return (r.id || "").toLowerCase().indexOf(kw) >= 0 ||
+                 (r.title || "").toLowerCase().indexOf(kw) >= 0 ||
+                 (r.applicant || "").toLowerCase().indexOf(kw) >= 0 ||
+                 (r.org || "").toLowerCase().indexOf(kw) >= 0;
+        });
+      }
+
+      function renderTable(container, rows, startIndex) {
+        var wrap = LGApp.el("div", { class: "table-wrap responsive" });
+
+        // 桌面表格
+        var scroll = LGApp.el("div", { class: "table-scroll audit-table-scroll" });
+        var table = LGApp.el("table", { class: "table audit-table" });
+        var thead = LGApp.el("thead");
+        var trh = LGApp.el("tr");
+        ["序号", "申请编号", "场景标题", "申请人", "所属机构", "申请数据集", "提交时间", "状态", "操作"].forEach(function (t, i) {
+          var th = LGApp.el("th", { text: t });
+          if (i === 0) th.style.textAlign = "center";
+          if (i === 8) th.style.textAlign = "right";
+          trh.appendChild(th);
+        });
+        thead.appendChild(trh);
+        table.appendChild(thead);
+
+        var tbody = LGApp.el("tbody");
+        if (!rows.length) {
+          var emptyTr = LGApp.el("tr");
+          var emptyTd = LGApp.el("td", { colspan: 9 });
+          emptyTd.innerHTML = '<div class="table-empty">' + LGApp.icon("empty") + '<div>暂无数据</div></div>';
+          emptyTr.appendChild(emptyTd);
+          tbody.appendChild(emptyTr);
+        } else {
+          rows.forEach(function (r, i) {
+            var tr = LGApp.el("tr");
+            var num = startIndex + i + 1;
+
+            var tdNum = LGApp.el("td", { class: "cell-num", text: String(num) });
+            tr.appendChild(tdNum);
+
+            var tdId = LGApp.el("td");
+            tdId.innerHTML = '<span class="cell-id">' + LGApp.el("span", { text: r.id }).textContent + '</span>';
+            tdId.innerHTML = '<span class="cell-id">' + LGComp.escapeHtml(r.id) + '</span>';
+            tr.appendChild(tdId);
+
+            var tdTitle = LGApp.el("td");
+            tdTitle.innerHTML = '<span class="cell-title">' + LGComp.escapeHtml(r.title) + '</span>';
+            tr.appendChild(tdTitle);
+
+            tr.appendChild(LGApp.el("td", { text: r.applicant || "—" }));
+            tr.appendChild(LGApp.el("td", { text: r.org || "—" }));
+
+            var tdDatasets = LGApp.el("td");
+            var dsHtml = r.datasets.map(function (d) {
+              return '<span class="data-tag">' + LGComp.escapeHtml(d) + '</span>';
+            }).join("");
+            tdDatasets.innerHTML = dsHtml;
+            tr.appendChild(tdDatasets);
+
+            var tdTime = LGApp.el("td");
+            tdTime.innerHTML = '<span class="cell-time">' + LGComp.escapeHtml(r.submitTime) + '</span>';
+            tr.appendChild(tdTime);
+
+            var tdStatus = LGApp.el("td");
+            var statusClass = r.status === "approved" ? "status-tag--approved" : "status-tag--pending";
+            var statusText = r.status === "approved" ? "审批通过" : "待审核";
+            tdStatus.innerHTML = '<span class="status-tag ' + statusClass + '">' + statusText + '</span>';
+            tr.appendChild(tdStatus);
+
+            var tdAct = LGApp.el("td", { class: "cell-actions" });
+            var btnClass = r.status === "approved" ? "act-btn--view" : "act-btn--audit";
+            var btnText = r.status === "approved" ? "查看" : "审核";
+            tdAct.innerHTML = '<button class="act-btn ' + btnClass + '">' + btnText + '</button>';
+            var btn = tdAct.querySelector("button");
+            btn.addEventListener("click", function () {
+              LGComp.toast(r.status === "approved" ? "查看详情" : "进入审核", "info");
+            });
+            tr.appendChild(tdAct);
+
+            tbody.appendChild(tr);
+          });
+        }
+        table.appendChild(tbody);
+        scroll.appendChild(table);
+        wrap.appendChild(scroll);
+
+        // 移动端卡片
+        var cardList = LGApp.el("div", { class: "audit-card-list" });
+        if (rows.length) {
+          rows.forEach(function (r) {
+            var card = LGApp.el("div", { class: "audit-card" });
+            var head = LGApp.el("div", { class: "audit-card__head" });
+            head.appendChild(LGApp.el("div", { class: "audit-card__title", text: r.title }));
+            var statusClass = r.status === "approved" ? "status-tag--approved" : "status-tag--pending";
+            var statusText = r.status === "approved" ? "审批通过" : "待审核";
+            head.innerHTML += '<span class="status-tag ' + statusClass + '">' + statusText + '</span>';
+            card.appendChild(head);
+
+            var meta = LGApp.el("div", { class: "audit-card__meta" });
+            meta.innerHTML =
+              '<span>编号：' + LGComp.escapeHtml(r.id) + '</span>' +
+              '<span>申请人：' + LGComp.escapeHtml(r.applicant || "—") + '</span>' +
+              '<span>机构：' + LGComp.escapeHtml(r.org || "—") + '</span>' +
+              '<span>提交：' + LGComp.escapeHtml(r.submitTime) + '</span>';
+            card.appendChild(meta);
+
+            var dsWrap = LGApp.el("div", { class: "audit-card__datasets" });
+            r.datasets.forEach(function (d) {
+              dsWrap.innerHTML += '<span class="data-tag">' + LGComp.escapeHtml(d) + '</span>';
+            });
+            card.appendChild(dsWrap);
+
+            var acts = LGApp.el("div", { class: "audit-card__actions" });
+            var btnClass = r.status === "approved" ? "act-btn--view" : "act-btn--audit";
+            var btnText = r.status === "approved" ? "查看" : "审核";
+            var actBtn = LGApp.el("button", { class: "act-btn " + btnClass, text: btnText });
+            actBtn.addEventListener("click", function () {
+              LGComp.toast(r.status === "approved" ? "查看详情" : "进入审核", "info");
+            });
+            acts.appendChild(actBtn);
+            card.appendChild(acts);
+
+            cardList.appendChild(card);
+          });
+        } else {
+          var ee = LGApp.el("div", { class: "empty-state" });
+          ee.innerHTML = LGApp.icon("empty") + "<div>暂无数据</div>";
+          cardList.appendChild(ee);
+        }
+        wrap.appendChild(cardList);
+
+        container.appendChild(wrap);
+      }
+
+      function renderPager(container, total) {
+        var pages = Math.max(1, Math.ceil(total / state.pageSize));
+        var pager = LGApp.el("div", { class: "pager-custom" });
+
+        pager.appendChild(LGApp.el("span", { text: "共 " + total + " 条" }));
+
+        var nav = LGApp.el("div", { class: "pager-custom__nav" });
+
+        var prevBtn = LGApp.el("button", { class: "pager-custom__btn", html: "<", disabled: state.page <= 1 });
+        prevBtn.addEventListener("click", function () { if (state.page > 1) { state.page--; renderPage(); } });
+        nav.appendChild(prevBtn);
+
+        // 页码
+        var nums = pageNumbers(state.page, pages);
+        nums.forEach(function (n) {
+          if (n === "...") {
+            nav.appendChild(LGApp.el("span", { class: "pager-custom__btn", text: "…", style: "border:none;background:none;cursor:default" }));
+          } else {
+            var b = LGApp.el("button", { class: "pager-custom__btn" + (n === state.page ? " active" : ""), text: String(n) });
+            b.addEventListener("click", function () { state.page = n; renderPage(); });
+            nav.appendChild(b);
+          }
+        });
+
+        var nextBtn = LGApp.el("button", { class: "pager-custom__btn", html: ">", disabled: state.page >= pages });
+        nextBtn.addEventListener("click", function () { if (state.page < pages) { state.page++; renderPage(); } });
+        nav.appendChild(nextBtn);
+
+        pager.appendChild(nav);
+
+        // 前往
+        var gotoWrap = LGApp.el("span", { class: "pager-custom__goto" });
+        gotoWrap.appendChild(document.createTextNode("前往"));
+        var gotoInput = LGApp.el("input", { type: "number", min: 1, max: pages, value: state.page });
+        gotoInput.addEventListener("change", function () {
+          var p = parseInt(gotoInput.value, 10);
+          if (p >= 1 && p <= pages) { state.page = p; renderPage(); }
+        });
+        gotoWrap.appendChild(gotoInput);
+        gotoWrap.appendChild(document.createTextNode("页"));
+        pager.appendChild(gotoWrap);
+
+        // 每页条数
+        var sizeSel = LGApp.el("select", { class: "pager-custom__size" });
+        [10, 20, 50].forEach(function (s) {
+          var opt = LGApp.el("option", { value: s, text: s + "条/页" });
+          if (s === state.pageSize) opt.selected = true;
+          sizeSel.appendChild(opt);
+        });
+        sizeSel.addEventListener("change", function () {
+          state.pageSize = parseInt(sizeSel.value, 10);
+          state.page = 1;
+          renderPage();
+        });
+        pager.appendChild(sizeSel);
+
+        container.appendChild(pager);
+      }
+
+      function pageNumbers(page, pages) {
+        var arr = [];
+        if (pages <= 7) {
+          for (var i = 1; i <= pages; i++) arr.push(i);
+          return arr;
+        }
+        arr.push(1);
+        if (page > 3) arr.push("...");
+        var s = Math.max(2, page - 1), e = Math.min(pages - 1, page + 1);
+        for (var j = s; j <= e; j++) arr.push(j);
+        if (page < pages - 2) arr.push("...");
+        arr.push(pages);
+        return arr;
+      }
+    })();
+  </script>
+</body>
+</html>

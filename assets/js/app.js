@@ -114,6 +114,12 @@
     { group: "工作台", items: [
       { key: "dashboard", label: "工作台首页", icon: "dashboard", href: "index.html" }
     ]},
+    { group: "审核管理", items: [
+      { key: "authAudit", label: "认证审批", icon: "check", href: "pages/audit/auth-audit.html" },
+      { key: "sceneAudit", label: "场景审批", icon: "scene", href: "pages/audit/scene-audit.html" },
+      { key: "resourceAudit", label: "资源发布审核", icon: "publish", href: "pages/audit/resource-audit.html" },
+      { key: "userAudit", label: "用户注册审核", icon: "user", href: "pages/audit/user-audit.html" }
+    ]},
     { group: "我的发布", items: [
       { key: "catalog", label: "数据目录发布", icon: "catalog", href: "pages/publish/catalog-list.html" },
       { key: "product", label: "产品发布", icon: "product", href: "pages/publish/product-list.html" },
