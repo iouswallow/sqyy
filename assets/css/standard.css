@@ -78,8 +78,8 @@
   --fz-hero: clamp(32px, 5vw, 56px);
 
   /* 字体 */
-  --ff-display: "Sora", "Noto Sans SC", -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
-  --ff-body: "Noto Sans SC", "Sora", -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --ff-display: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  --ff-body: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
   --fw-r: 400;
   --fw-m: 500;
   --fw-sb: 600;

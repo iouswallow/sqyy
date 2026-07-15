@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>工作台 · 数智中台</title>
   <meta name="description" content="液态玻璃后台管理系统 - 工作台首页" />
-  <link rel="preconnect" href="https://fonts.googleapis.cn" />
-  <link href="https://fonts.googleapis.cn/css2?family=Sora:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./assets/css/standard.css" />
   <link rel="stylesheet" href="./assets/css/components.css" />
   <link rel="stylesheet" href="./assets/css/layout.css" />
@@ -18,8 +16,21 @@
   <script src="./assets/js/components.js"></script>
 
   <script>
-    LGApp.mountShell({ active: "dashboard", topTitle: "工作台", topSub: "数据运营管理中心" });
-    renderDashboard();
+    (function () {
+      function start() {
+        if (!window.LGApp || !window.LGData || !window.LGComp) {
+          setTimeout(start, 50);
+          return;
+        }
+        try {
+          LGApp.mountShell({ active: "dashboard", topTitle: "工作台", topSub: "数据运营管理中心" });
+          renderDashboard();
+        } catch (e) {
+          document.body.innerHTML = '<div style="padding:40px;font-family:system-ui,sans-serif;"><h2>页面加载异常</h2><p>' + (e.message || e) + '</p></div>';
+        }
+      }
+      start();
+    })();
 
     function renderDashboard() {
       var root = LGApp.$("#page-root");
