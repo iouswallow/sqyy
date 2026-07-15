@@ -1,51 +1,50 @@
 /* ==========================================================================
-   standard.css — 液态玻璃后台管理系统 · 标准基础层
+   standard.css — 液态玻璃后台管理系统 · 标准基础层 (浅色主题)
    设计令牌 / 重置 / 排版 / 流动背景 / 滚动条
    所有页面共用，禁止在本文件中写具体组件
    ========================================================================== */
 
-/* ---------- 设计令牌 ---------- */
 :root {
-  /* 主色：深蓝 + 紫色 + 黑色 */
-  --c-bg-0: #05070f;          /* 最深黑底 */
-  --c-bg-1: #0a0f1f;          /* 深黑蓝 */
-  --c-bg-2: #0b1e3f;          /* 深蓝 主背景基底 */
-  --c-bg-3: #122a5a;          /* 深蓝亮 */
-  --c-purple: #7c3aed;        /* 紫主 */
-  --c-purple-2: #a855f7;      /* 紫亮 */
-  --c-purple-3: #c084fc;      /* 紫淡 */
-  --c-cyan: #22d3ee;          /* 青蓝高亮 */
-  --c-blue: #3b82f6;          /* 辅助蓝 */
+  /* 主色：浅紫 + 浅蓝 + 米白（保持"深蓝+紫+黑"主色但取浅色版本） */
+  --c-bg-0: #f4f6fb;          /* 页面最外层灰白 */
+  --c-bg-1: #ffffff;          /* 卡片底白 */
+  --c-bg-2: #eef0f7;          /* 浅蓝灰面板 */
+  --c-bg-3: #e3e6f0;          /* 描边与分割 */
+  --c-purple: #6d28d9;        /* 紫主（深） */
+  --c-purple-2: #7c3aed;      /* 紫主 */
+  --c-purple-3: #a855f7;      /* 紫亮（用于强调文字/渐变） */
+  --c-cyan: #0891b2;          /* 青蓝（深，可读） */
+  --c-blue: #2563eb;          /* 辅助蓝 */
 
   /* 状态色 */
-  --c-draft: #94a3b8;         /* 暂存 灰蓝 */
-  --c-submitted: #a855f7;     /* 已提交 紫 */
-  --c-approving: #22d3ee;     /* 审批中 青 */
-  --c-approved: #34d399;      /* 已通过 绿 */
-  --c-rejected: #f43f5e;      /* 已驳回 红 */
+  --c-draft: #64748b;         /* 暂存 灰 */
+  --c-submitted: #7c3aed;     /* 已提交 紫 */
+  --c-approving: #0891b2;     /* 审批中 青 */
+  --c-approved: #059669;      /* 已通过 绿 */
+  --c-rejected: #dc2626;      /* 已驳回 红 */
 
-  /* 文字层级 */
-  --t-1: rgba(255, 255, 255, 0.95);
-  --t-2: rgba(255, 255, 255, 0.72);
-  --t-3: rgba(255, 255, 255, 0.5);
-  --t-4: rgba(255, 255, 255, 0.34);
+  /* 文字层级（深色文字） */
+  --t-1: rgba(15, 23, 42, 0.95);     /* 主文字 */
+  --t-2: rgba(30, 41, 59, 0.72);     /* 次文字 */
+  --t-3: rgba(51, 65, 85, 0.55);     /* 弱文字 */
+  --t-4: rgba(71, 85, 105, 0.38);    /* 占位 */
 
-  /* 玻璃 */
-  --glass-bg: rgba(255, 255, 255, 0.055);
-  --glass-bg-strong: rgba(255, 255, 255, 0.09);
-  --glass-bg-soft: rgba(255, 255, 255, 0.035);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-border-strong: rgba(255, 255, 255, 0.2);
-  --glass-blur: 20px;
-  --glass-saturate: 140%;
+  /* 玻璃（在浅底上以白色半透 + 细描边构造） */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-bg-strong: rgba(255, 255, 255, 0.88);
+  --glass-bg-soft: rgba(255, 255, 255, 0.5);
+  --glass-border: rgba(124, 58, 237, 0.16);
+  --glass-border-strong: rgba(124, 58, 237, 0.28);
+  --glass-blur: 18px;
+  --glass-saturate: 160%;
 
-  /* 阴影 */
-  --sh-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --sh-md: 0 8px 24px rgba(0, 0, 0, 0.35);
-  --sh-lg: 0 20px 50px rgba(0, 0, 0, 0.45);
-  --sh-glow-purple: 0 8px 32px rgba(124, 58, 237, 0.35);
-  --sh-glow-cyan: 0 8px 32px rgba(34, 211, 238, 0.28);
-  --sh-inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  /* 阴影（浅底用更柔的阴影） */
+  --sh-sm: 0 1px 2px rgba(15, 23, 42, 0.06), 0 2px 6px rgba(15, 23, 42, 0.04);
+  --sh-md: 0 4px 12px rgba(15, 23, 42, 0.08), 0 12px 28px rgba(124, 58, 237, 0.08);
+  --sh-lg: 0 10px 30px rgba(15, 23, 42, 0.10), 0 24px 60px rgba(124, 58, 237, 0.10);
+  --sh-glow-purple: 0 8px 24px rgba(124, 58, 237, 0.25);
+  --sh-glow-cyan: 0 8px 24px rgba(8, 145, 178, 0.20);
+  --sh-inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 
   /* 圆角 */
   --r-xs: 6px;
@@ -140,7 +139,7 @@ a {
   transition: color var(--dur-1) var(--ease-out);
 }
 
-a:hover { color: var(--c-purple-3); }
+a:hover { color: var(--c-purple); }
 
 button,
 input,
@@ -160,32 +159,31 @@ ul, ol { list-style: none; }
 
 img { max-width: 100%; display: block; }
 
-/* ---------- 流动渐变背景 ---------- */
+/* ---------- 流动渐变背景（浅色） ---------- */
 body::before {
   content: "";
   position: fixed;
   inset: -10%;
   z-index: -2;
   background:
-    radial-gradient(ellipse 80% 60% at 15% 10%, rgba(124, 58, 237, 0.28), transparent 60%),
-    radial-gradient(ellipse 70% 55% at 85% 20%, rgba(34, 211, 238, 0.18), transparent 55%),
-    radial-gradient(ellipse 90% 70% at 75% 90%, rgba(59, 130, 246, 0.22), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 20% 85%, rgba(168, 85, 247, 0.16), transparent 55%),
-    linear-gradient(160deg, #05070f 0%, #0a0f1f 35%, #0b1e3f 70%, #05070f 100%);
+    radial-gradient(ellipse 80% 60% at 12% 8%,  rgba(168, 85, 247, 0.18), transparent 60%),
+    radial-gradient(ellipse 70% 55% at 88% 18%, rgba(34, 211, 238, 0.16), transparent 55%),
+    radial-gradient(ellipse 90% 70% at 78% 92%, rgba(99, 102, 241, 0.16), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 18% 86%, rgba(236, 72, 153, 0.10), transparent 55%),
+    linear-gradient(160deg, #f4f6fb 0%, #eef0f7 40%, #f7f5ff 80%, #f0f4ff 100%);
   background-size: 200% 200%, 200% 200%, 200% 200%, 200% 200%, 100% 100%;
   animation: bgFlow 28s ease-in-out infinite;
-  filter: saturate(1.05);
+  filter: saturate(1.02);
 }
 
 body::after {
-  /* 细噪点叠加，增加玻璃质感 */
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: 0.4;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.05 0 0 0 0 0.2 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 @keyframes bgFlow {
@@ -197,16 +195,16 @@ body::after {
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(124, 58, 237, 0.22);
   border-radius: var(--r-pill);
   border: 2px solid transparent;
   background-clip: padding-box;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(168, 85, 247, 0.4); background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: rgba(124, 58, 237, 0.4); background-clip: padding-box; }
 
-* { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.15) transparent; }
+* { scrollbar-width: thin; scrollbar-color: rgba(124,58,237,0.25) transparent; }
 
-::selection { background: rgba(124, 58, 237, 0.45); color: #fff; }
+::selection { background: rgba(168, 85, 247, 0.3); color: var(--t-1); }
 
 /* ---------- 通用工具类 ---------- */
 .container {
@@ -223,7 +221,7 @@ body::after {
 .text-purple { color: var(--c-purple-3); }
 .text-cyan { color: var(--c-cyan); }
 .text-gradient {
-  background: linear-gradient(120deg, #fff 0%, var(--c-purple-3) 50%, var(--c-cyan) 100%);
+  background: linear-gradient(120deg, var(--c-purple) 0%, var(--c-purple-3) 50%, var(--c-cyan) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -244,7 +242,7 @@ body::after {
 
 /* 焦点可见性 */
 :focus-visible {
-  outline: 2px solid var(--c-purple-3);
+  outline: 2px solid var(--c-purple-2);
   outline-offset: 2px;
   border-radius: var(--r-xs);
 }
