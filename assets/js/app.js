@@ -62,11 +62,10 @@
     return str;
   }
 
-  // 相对路径修正：子页面需要回到根
   function asset(path) {
-    var depth = (location.pathname.match(/\//g) || []).length - 1;
-    // 计算相对 workspace 根的层级：根目录文件 depth=0, pages/xxx/ = 2
-    // 简化：根据是否在 pages 下决定
+    if (path.indexOf("/") === 0) return path;
+    if (path.indexOf("./") === 0) return path;
+    if (path.indexOf("../") === 0) return path;
     var inPages = location.pathname.indexOf("/pages/") >= 0;
     var prefix = inPages ? "../../" : "./";
     return prefix + path;
