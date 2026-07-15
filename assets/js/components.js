@@ -470,7 +470,7 @@
       var empty = el("div", { class: "empty-state" });
       empty.innerHTML = icon("empty") + "<div>未找到对应工单，请返回列表查看。</div>";
       root.appendChild(empty);
-      var back = el("a", { class: "btn btn-ghost", href: opts.listHref, html: icon("arrowLeft") + "<span>返回列表</span>" });
+      var back = el("a", { class: "btn btn-ghost", href: LGApp.asset(opts.listHref), html: icon("arrowLeft") + "<span>返回列表</span>" });
       root.appendChild(back);
       return;
     }
@@ -507,7 +507,7 @@
 
       // 底部操作
       var actBar = el("div", { class: "action-bar" });
-      var backBtn = el("a", { class: "btn btn-ghost", href: opts.listHref, html: icon("arrowLeft") + "<span>返回</span>" });
+      var backBtn = el("a", { class: "btn btn-ghost", href: LGApp.asset(opts.listHref), html: icon("arrowLeft") + "<span>返回</span>" });
       actBar.appendChild(backBtn);
       // 非新建工单：始终提供“查看审批流程”入口（移动端侧栏隐藏时尤为重要）
       if (!isNew) {
@@ -595,7 +595,7 @@
         if (submit) D.submit(ticket.id);
       }
       toast(submit ? "已提交审批" : "已暂存", "success");
-      setTimeout(function () { location.href = opts.listHref; }, 700);
+      setTimeout(function () { location.href = LGApp.asset(opts.listHref); }, 700);
     }
 
     function collectForm(t) {
